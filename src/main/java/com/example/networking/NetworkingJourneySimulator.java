@@ -128,7 +128,7 @@ public class NetworkingJourneySimulator extends JFrame {
         simulateButton.setEnabled(false);
         logArea.setText("");
         // Reset cache for each new simulation
-        dnsCache.clear();
+        // dnsCache.clear();
 
         // Start the simulation in a separate thread
         final String finalUrl = url;
@@ -149,7 +149,9 @@ public class NetworkingJourneySimulator extends JFrame {
             simulationUtils.addToLog("Host: " + host);
             simulationUtils.addToLog("");
 
+            // -------------------------------------------
             // Stage 1: DNS Resolution
+            // ------------------------------------------
             DnsResolver dnsResolver = new DnsResolver(simulationUtils, dnsCache);
             String ipAddress = dnsResolver.resolve(host);
             Thread.sleep(1000);
