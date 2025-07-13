@@ -27,7 +27,7 @@ Welcome to the **Networking Journey Simulator**\! This is a simple Java Swing ap
     If you have Git:
 
     ```bash
-    git clone <repository_url> # Replace with your repository URL if applicable
+    git clone https://github.com/Tamim0133/NETWORKINGJOURNEYSIMULATOR
     cd NetworkingJourneySimulator
     ```
 
