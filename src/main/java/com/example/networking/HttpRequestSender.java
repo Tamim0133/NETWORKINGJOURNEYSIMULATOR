@@ -15,33 +15,37 @@ public class HttpRequestSender {
     }
 
     public void sendRequest(String url) {
+        // Stage initialization: log stage and update visual UI
         simulationUtils.addToLog("📡 STAGE 3: HTTP REQUEST & RESPONSE");
         simulationUtils.addToLog("-".repeat(35));
         simulationUtils.updateProgress(50, "HTTP Request...");
         simulationUtils.updateVisualPanel("📡 HTTP Communication", new Color(255, 182, 193));
 
         try {
+            // Log start of HTTP request sending
             simulationUtils.addToLog("🔄 Sending HTTP Request...");
 
-            // Create HTTP request
+            // Create and configure the HTTP GET request
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("User-Agent", "NetworkingSimulator/1.0");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+            connection.setRequestMethod("GET"); // Use GET method
+            connection.setRequestProperty("User-Agent", "NetworkingSimulator/1.0"); // Set user agent
+            connection.setConnectTimeout(5000); // Set connect timeout to 5 seconds
+            connection.setReadTimeout(5000); // Set read timeout to 5 seconds
 
+            // Log HTTP request headers being sent
             simulationUtils.addToLog("📤 HTTP Request Headers:");
-            simulationUtils.addToLog("   GET " + new URL(url).getPath() + " HTTP/1.1"); // Use getPath for a more
-                                                                                        // realistic request line
+            simulationUtils.addToLog("   GET " + new URL(url).getPath() + " HTTP/1.1"); // Realistic request line
             simulationUtils.addToLog("   Host: " + new URL(url).getHost());
             simulationUtils.addToLog("   User-Agent: NetworkingSimulator/1.0");
             simulationUtils.addToLog("   Accept: text/html,application/xhtml+xml");
             simulationUtils.addToLog("   Connection: keep-alive");
 
+            // Measure response time by recording time before and after request
             long startTime = System.currentTimeMillis();
-            int responseCode = connection.getResponseCode();
+            int responseCode = connection.getResponseCode(); // Sends request and gets response code
             long endTime = System.currentTimeMillis();
 
+            // Log response metadata
             simulationUtils.addToLog("");
             simulationUtils.addToLog("📥 HTTP Response Received:");
             simulationUtils.addToLog("   Status Code: " + responseCode + " " + connection.getResponseMessage());
@@ -50,13 +54,13 @@ public class HttpRequestSender {
             simulationUtils.addToLog("   Server: " + connection.getHeaderField("Server"));
             simulationUtils.addToLog("   Response Time: " + (endTime - startTime) + "ms");
 
-            // Handle redirects
+            // Check for redirection and log it
             if (responseCode >= 300 && responseCode < 400) {
                 String location = connection.getHeaderField("Location");
                 simulationUtils.addToLog("🔄 Redirect detected to: " + location);
             }
 
-            // Simulate reading response content
+            // If successful (HTTP 200), read and preview the content
             if (responseCode == 200) {
                 simulationUtils.addToLog("✅ Successfully received webpage content");
 
@@ -65,20 +69,27 @@ public class HttpRequestSender {
                     long contentSize = 0;
                     String line;
                     int lines = 0;
+
+                    // Read and measure up to 5 lines of the response content
                     while ((line = reader.readLine()) != null && lines < 5) {
                         contentSize += line.length();
                         lines++;
                     }
+
+                    // Log the size of content previewed
                     simulationUtils.addToLog("📄 Content preview: " + contentSize + " characters read...");
                 }
             }
 
+            // Disconnect after completion
             connection.disconnect();
 
         } catch (Exception e) {
+            // Log any errors that occur during request
             simulationUtils.addToLog("❌ HTTP Request Failed: " + e.getMessage());
         }
 
+        // Final log and progress update
         simulationUtils.addToLog("");
         simulationUtils.updateProgress(60, "HTTP Response Received");
     }
